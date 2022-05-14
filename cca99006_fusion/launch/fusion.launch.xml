@@ -1,0 +1,35 @@
+<launch>
+    <arg name="pause" default="true"/>
+	<arg name="gui" default="true"/>
+	<arg name="use_sim_time" default="true"/>
+	<arg name="wam" default="false"/>
+	<arg name="gps" default="true"/>
+	<arg name="world" default ="$(find-pkg-share ufrgs_gazebo)/worlds/empty_sky_porto_alegre.world"/>
+	
+	<arg name="controller" default="twist_mrac_linearizing_controller"/>
+	<arg name="config" default="$(find-pkg-share twil_bringup)/config/$(var controller).yaml"/>
+
+
+    <include file="$(find-pkg-share twil_bringup)/launch/gazebo.launch.xml">
+		<arg name="pause" value="$(var pause)"/>
+		<arg name="gui" value="$(var gui)"/>
+		<arg name="use_sim_time" value="$(var use_sim_time)"/>
+		<arg name="wam" value="$(var wam)"/>
+        <arg name="gps" value="$(var gps)"/>
+        <arg name="world" value="$(var world)"/>
+        <arg name="config" value="$(var config)"/>
+        <arg name="controller" value="$(var controller)"/>
+	</include>
+
+    <!--<node name="odom_publisher" pkg="tf2_ros" exec="static_transform_publisher" args="0 0 0 0 0 0 1 map odom"/> -->
+	
+	<node name="fusion_gps_odom" pkg="cca99006_fusion" exec="fusionGPS_Odo">
+		<param name="use_sim_time" value="$(var use_sim_time)"/>
+	</node>
+
+    <include file="$(find-pkg-share twil_description)/launch/display.launch.xml">
+        <arg name="use_sim_time" value="$(var use_sim_time)"/>
+    </include>
+
+
+</launch>
